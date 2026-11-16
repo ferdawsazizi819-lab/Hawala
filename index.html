@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>دفتر حواله صرافی</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#14532d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="دفتر حواله">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{--g:#14532d;--g2:#1f7a45;--gl:#e8f1ea;--bg:#f5f7f5;--ink:#10231a;--mut:#6b7f73;--line:#dbe5de;--red:#b3261e;
+--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);
+font-family:"SF Arabic","Geeza Pro","Vazirmatn","Tahoma",-apple-system,system-ui,sans-serif;font-size:17px;line-height:1.6}
+button,input{font:inherit;color:inherit}
+header{background:var(--g);color:#fff;padding:calc(var(--sat) + 14px) 16px 14px;position:sticky;top:0;z-index:5}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+h1{font-size:22px;margin:0;font-weight:700}
+.icon-btn{background:rgba(255,255,255,.15);border:0;color:#fff;border-radius:12px;min-width:44px;height:44px;font-size:15px;padding:0 12px}
+.search{margin-top:12px;display:flex;gap:8px}
+.search input{flex:1;height:46px;border-radius:12px;border:0;padding:0 14px;background:#fff;font-size:17px}
+.bar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px 4px;color:var(--mut);font-size:15px}
+.link{background:none;border:0;color:var(--g2);font-weight:700;padding:6px 0;font-size:15px}
+main{padding:4px 16px calc(110px + var(--sab))}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:10px 0;display:flex;gap:14px;align-items:center;width:100%;text-align:right;cursor:pointer}
+.no{unicode-bidi:plaintext;max-width:40%;overflow:hidden;text-overflow:ellipsis;background:var(--gl);color:var(--g);font-weight:900;border-radius:12px;min-width:62px;padding:8px 6px;text-align:center;font-size:18px}
+.cb{flex:1;min-width:0}
+.cb b{display:block;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cb span{color:var(--mut);font-size:14px}
+.amt{font-weight:900;color:var(--g);white-space:nowrap;font-size:19px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:16px}
+.chip.on{border-color:var(--g);background:var(--gl);font-weight:700}
+.empty{text-align:center;color:var(--mut);padding:56px 20px}
+.add{position:fixed;inset-inline:16px;bottom:calc(14px + var(--sab));height:58px;border:0;border-radius:16px;background:var(--g);color:#fff;font-size:19px;font-weight:700;box-shadow:0 6px 18px rgba(20,83,45,.35);z-index:6}
+.add:active,.btn:active{transform:scale(.98)}
+.ov{position:fixed;inset:0;background:rgba(10,30,20,.45);display:none;z-index:20}
+.ov.on{display:block}
+.sheet{position:absolute;inset-inline:0;bottom:0;background:#fff;border-radius:22px 22px 0 0;max-height:94vh;overflow:auto;padding:18px 18px calc(22px + var(--sab));animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.sheet{animation:none}}
+.sheet h2{margin:0 0 12px;font-size:20px;color:var(--g)}
+label{display:block;font-weight:700;margin:12px 0 5px;font-size:15px}
+.f{width:100%;height:50px;border:1.5px solid var(--line);border-radius:12px;padding:0 14px;background:#fff;font-size:18px}
+.f:focus{outline:none;border-color:var(--g2);box-shadow:0 0 0 3px rgba(31,122,69,.18)}
+.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}.row>.w2{flex:1.4}
+.btn{height:54px;border-radius:14px;border:1.5px solid var(--g);background:#fff;color:var(--g);font-weight:700;font-size:17px;width:100%}
+.btn.p{background:var(--g);color:#fff}
+.btn.d{border-color:var(--red);color:var(--red)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.slip{background:var(--gl);border-radius:14px;padding:14px 16px;line-height:2;font-size:18px}
+.slip b{color:var(--g)}
+.err{color:var(--red);font-size:14px;min-height:20px;margin-top:6px}
+.note{color:var(--mut);font-size:14px;margin:6px 0}
+.toast{position:fixed;inset-inline:0;bottom:calc(88px + var(--sab));margin:auto;width:max-content;max-width:86%;background:#10231a;color:#fff;padding:10px 18px;border-radius:12px;z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+#printArea{display:none}
+@media print{
+ body>*:not(#printArea){display:none!important}
+ #printArea{display:block;padding:30px;font-size:22px;line-height:2.2;color:#000}
+ #printArea h3{font-size:28px;border-bottom:3px solid #14532d;padding-bottom:8px;color:#14532d}
+ #printArea .ft{margin-top:40px;font-size:14px;color:#555}
+}
+</style>
+</head>
+<body>
+<header>
+ <div class="top"><h1>دفتر حواله صرافی</h1><button class="icon-btn" id="bSet" aria-label="پشتیبان‌گیری">پشتیبان</button></div>
+ <div class="search"><input id="q" type="search" placeholder="جستجو: نمبر، فرستنده یا گیرنده" enterkeyhint="search" autocomplete="off"></div>
+</header>
+<div class="bar"><span id="cnt"></span><button class="link" id="bSort"></button></div>
+<main id="list"></main>
+<button class="add" id="bAdd">+ ثبت حواله جدید</button>
+
+<!-- فرم -->
+<div class="ov" id="ovForm"><div class="sheet">
+ <h2 id="fTitle">ثبت حواله جدید</h2>
+ <label for="fNo">۱. نمبر حواله</label><input class="f" id="fNo" inputmode="text" autocomplete="off" placeholder="مثلاً ۱۳۲ یا A-132">
+ <label for="fFrom">۲. فرستنده</label><input class="f" id="fFrom" autocomplete="off" placeholder="نام فرستنده">
+ <label for="fTo">۳. گیرنده</label><input class="f" id="fTo" autocomplete="off" placeholder="نام گیرنده">
+ <label for="fSrc">۴. منبع</label><input class="f" id="fSrc" list="srcs" autocomplete="off" placeholder="مثلاً مزار شریف، کابل، فاریاب"><div class="chips" id="srcChips"></div><datalist id="srcs"></datalist>
+ <label>۵. مبلغ و نوع ارز</label>
+ <div class="row"><input class="f w2" id="fAmt" inputmode="decimal" autocomplete="off" placeholder="مبلغ"><input class="f" id="fCur" list="curs" placeholder="ارز"></div>
+ <div class="chips" id="chips"></div>
+ <datalist id="curs"><option value="دالر"><option value="افغانی"><option value="یورو"><option value="پوند"><option value="درهم"><option value="تومان"><option value="ریال"><option value="کلدار"></datalist>
+ <label for="fDate">۶. تاریخ</label><input class="f" id="fDate" inputmode="numeric" autocomplete="off" placeholder="۱۴۰۵/۰۱/۰۱">
+ <div class="err" id="fErr"></div>
+ <div class="grid"><button class="btn" id="fCancel">انصراف</button><button class="btn p" id="fSave">ذخیره</button></div>
+</div></div>
+
+<!-- جزئیات -->
+<div class="ov" id="ovView"><div class="sheet">
+ <h2 id="vTitle"></h2><div class="slip" id="vBody"></div>
+ <div class="grid">
+  <button class="btn" id="vCopy">کپی متن</button><button class="btn" id="vPrint">چاپ / PDF</button>
+  <button class="btn" id="vEdit">ویرایش</button><button class="btn d" id="vDel">حذف</button>
+ </div>
+ <button class="btn" id="vClose" style="margin-top:10px">بستن</button>
+</div></div>
+
+<!-- پشتیبان -->
+<div class="ov" id="ovSet"><div class="sheet">
+ <h2>پشتیبان‌گیری و بازیابی</h2>
+ <p class="note" id="sInfo"></p>
+ <button class="btn p" id="sBackup">تهیه نسخه پشتیبان</button>
+ <p class="note">فایل پشتیبان را در «Files» یا iCloud ذخیره کنید یا برای خودتان بفرستید.</p>
+ <button class="btn" id="sDigits" style="margin-bottom:10px"></button>
+ <button class="btn" id="sRestore" style="margin-top:6px">بازیابی از فایل پشتیبان</button>
+ <p class="note">حواله‌های فایل به اطلاعات فعلی اضافه می‌شوند. اگر نمبر تکراری باشد، نسخه فایل جایگزین می‌شود.</p>
+ <input type="file" id="sFile" accept=".json,application/json" hidden>
+ <button class="btn" id="sClose" style="margin-top:10px">بستن</button>
+</div></div>
+
+<div class="ov" id="ovAsk" style="z-index:40"><div class="sheet"><h2 id="aMsg" style="color:var(--ink);font-size:18px"></h2><div class="grid"><button class="btn" id="aNo">برگشت</button><button class="btn p" id="aYes">ادامه</button></div></div></div>
+<div id="printArea"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+var KEY='daftar-hawala:v1', META='daftar-hawala:meta';
+var $=function(s){return document.querySelector(s)};
+var forceDup=false, digitsFa=true, items=[], asc=false, editId=null, curId=null, query='';
+
+/* ---------- ابزار اعداد و متن فارسی ---------- */
+function norm(s){return String(s==null?'':s).replace(/[۰-۹]/g,function(d){return d.charCodeAt(0)-1776})
+ .replace(/[٠-٩]/g,function(d){return d.charCodeAt(0)-1632}).replace(/٫/g,'.').replace(/[٬،,]/g,'').trim()}
+function fa(s){s=String(s);return digitsFa?s.replace(/\d/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'[d]}):s}
+function nz(s){return norm(s).replace(/ي/g,'ی').replace(/ك/g,'ک').toLowerCase()}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function today(){
+ var p={};new Intl.DateTimeFormat('en-u-ca-persian-nu-latn',{year:'numeric',month:'2-digit',day:'2-digit'})
+ .formatToParts(new Date()).forEach(function(x){p[x.type]=x.value});
+ return p.year+'/'+p.month+'/'+p.day}
+function num(it){var n=parseFloat(norm(it.no));return isNaN(n)?null:n}
+
+/* ---------- ذخیره‌سازی محلی ---------- */
+function load(){try{items=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(items))items=[]}catch(e){items=[]}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){toast('خطا در ذخیره‌سازی! حافظه پر است.')}}
+function meta(){try{return JSON.parse(localStorage.getItem(META)||'{}')}catch(e){return {}}}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+
+/* ---------- نمایش ---------- */
+function sorted(){
+ return items.slice().sort(function(a,b){
+  var x=num(a),y=num(b),r;
+  if(x!==null&&y!==null)r=x-y;else if(x!==null)r=-1;else if(y!==null)r=1;else r=norm(a.no).localeCompare(norm(b.no),'fa',{numeric:true});
+  if(r===0)r=(a.created||0)-(b.created||0);
+  return asc?r:-r})}
+var CUR={'دالر':'🇺🇸','دلار':'🇺🇸','usd':'🇺🇸','$':'🇺🇸','افغانی':'🇦🇫','afn':'🇦🇫','یورو':'🇪🇺','eur':'🇪🇺','پوند':'🇬🇧','gbp':'🇬🇧','درهم':'🇦🇪','aed':'🇦🇪','تومان':'🇮🇷','ریال':'🇮🇷','irr':'🇮🇷','کلدار':'🇵🇰','روپیه':'🇵🇰','pkr':'🇵🇰','لیر':'🇹🇷','try':'🇹🇷','sar':'🇸🇦'};
+function flag(c){return CUR[nz(c)]||''}
+function curTxt(c){var f=flag(c);return f?f+' '+c:c}
+function group(s){var p=String(s).split('.'),a=p[0],o='';for(var i=a.length;i>0;i-=3)o=(i>3?',':'')+a.slice(Math.max(0,i-3),i)+o;p[0]=o;return p.join('.')}
+function amtText(it,plain){return fa(group(norm(it.amount)))+(it.cur?' '+(plain?it.cur:curTxt(it.cur)):'')}
+function render(){
+ var q=nz(query),L=sorted().filter(function(it){
+  return !q||nz(it.no).indexOf(q)>-1||nz(it.from).indexOf(q)>-1||nz(it.to).indexOf(q)>-1||nz(it.src||'').indexOf(q)>-1});
+ $('#cnt').textContent=q?fa(L.length)+' نتیجه از '+fa(items.length)+' حواله':fa(items.length)+' حواله ثبت شده';
+ $('#bSort').textContent=asc?'ترتیب: کم به زیاد ↑':'ترتیب: زیاد به کم ↓';
+ var h='';
+ if(!L.length)h='<div class="empty">'+(items.length?'حواله‌ای با این مشخصات پیدا نشد.':'هنوز حواله‌ای ثبت نشده است.<br>برای شروع دکمه سبز پایین صفحه را بزنید.')+'</div>';
+ L.forEach(function(it){
+  h+='<button class="card" data-id="'+it.id+'"><div class="no">'+esc(fa(norm(it.no)))+'</div>'
+   +'<div class="cb"><b>'+esc(it.from)+' ← '+esc(it.to)+'</b><span>'+(it.src?esc(it.src)+' · ':'')+esc(fa(it.date||''))+'</span></div>'
+   +'<div class="amt">'+esc(amtText(it))+'</div></button>'});
+ $('#list').innerHTML=h}
+
+function slipHtml(it){return '<div dir="rtl"><p>شماره حواله <b>'+esc(fa(norm(it.no)))+'</b></p><p>فرستنده: '+esc(it.from)+'</p><p>گیرنده: '+esc(it.to)+'</p>'+(it.src?'<p>منبع: '+esc(it.src)+'</p>':'')+'<p>مبلغ: <b>'+esc(amtText(it))+'</b></p><p>تاریخ: '+esc(fa(it.date||''))+'</p></div>'}
+function copyRich(t,h){
+ if(navigator.clipboard&&navigator.clipboard.write&&window.ClipboardItem&&window.isSecureContext){
+  try{return navigator.clipboard.write([new ClipboardItem({'text/plain':new Blob([t],{type:'text/plain'}),'text/html':new Blob([h],{type:'text/html'})})]).catch(function(){return copyText(t)})}catch(e){}}
+ return copyText(t)}
+function slipText(it){
+ return 'شماره حواله *'+fa(norm(it.no))+'*\n\nفرستنده: '+it.from+'\n\nگیرنده: '+it.to+(it.src?'\n\nمنبع: '+it.src:'')+'\n\nمبلغ: *'+amtText(it)+'*\n\nتاریخ: '+fa(it.date||'')}
+
+/* ---------- پنجره‌ها ---------- */
+function open(id){$(id).classList.add('on')}
+function close(id){$(id).classList.remove('on')}
+var tt;function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('on')},2200)}
+
+function ask(msg,yes,cb){$('#aMsg').textContent=msg;$('#aYes').textContent=yes;$('#aYes').onclick=function(){close('#ovAsk');cb()};$('#aNo').onclick=function(){close('#ovAsk')};open('#ovAsk')}
+function openForm(it){
+ editId=it?it.id:null;$('#fErr').textContent='';
+ $('#fTitle').textContent=it?'ویرایش حواله':'ثبت حواله جدید';
+ if(it){$('#fNo').value=fa(norm(it.no));$('#fFrom').value=it.from;$('#fTo').value=it.to;$('#fSrc').value=it.src||'';
+  $('#fAmt').value=fa(group(norm(it.amount)));$('#fCur').value=it.cur||'';$('#fDate').value=fa(it.date||'')}
+ else{var mx=0;items.forEach(function(x){var n=num(x);if(n!==null&&n>mx)mx=n});
+  $('#fNo').value='';$('#fFrom').value='';$('#fTo').value='';$('#fSrc').value='';$('#fAmt').value='';
+  $('#fCur').value=(meta().lastCur)||'دالر';$('#fDate').value=fa(today())}
+ renderChips();renderSrc();open('#ovForm');setTimeout(function(){$(it?'#fFrom':'#fNo').focus()},250)}
+
+function saveForm(){
+ var no=norm($('#fNo').value),from=$('#fFrom').value.trim(),to=$('#fTo').value.trim(),src=$('#fSrc').value.trim(),
+  amt=norm($('#fAmt').value),cur=$('#fCur').value.trim(),date=norm($('#fDate').value),e=$('#fErr');
+ if(!no)return e.textContent='نمبر حواله را وارد کنید.';
+ if(!from)return e.textContent='نام فرستنده را وارد کنید.';
+ if(!to)return e.textContent='نام گیرنده را وارد کنید.';
+ if(!amt||isNaN(parseFloat(amt)))return e.textContent='مبلغ را درست وارد کنید.';
+ if(!date)return e.textContent='تاریخ را وارد کنید.';
+ var dup=items.some(function(x){return nz(x.no)===nz(no)&&x.id!==editId});
+ if(dup&&!forceDup){ask('حواله‌ای با نمبر '+fa(no)+' قبلاً ثبت شده است. باز هم ذخیره شود؟','ذخیره با همین نمبر',function(){forceDup=true;saveForm()});return}forceDup=false;
+ if(editId){var it=items.filter(function(x){return x.id===editId})[0];
+  it.no=no;it.from=from;it.to=to;it.src=src;it.amount=amt;it.cur=cur;it.date=date;it.updated=Date.now()}
+ else items.push({id:uid(),no:no,from:from,to:to,src:src,amount:amt,cur:cur,date:date,created:Date.now()});
+ save();try{var m=meta();m.lastCur=cur;localStorage.setItem(META,JSON.stringify(m))}catch(e){}
+ close('#ovForm');render();toast(editId?'تغییرات ذخیره شد':'حواله ذخیره شد')}
+
+function openView(id){
+ var it=items.filter(function(x){return x.id===id})[0];if(!it)return;curId=id;
+ $('#vTitle').textContent='شماره حواله '+fa(norm(it.no));
+ $('#vBody').innerHTML='فرستنده: <b>'+esc(it.from)+'</b><br>گیرنده: <b>'+esc(it.to)+'</b>'+(it.src?'<br>منبع: <b>'+esc(it.src)+'</b>':'')+'<br>مبلغ: <b style="font-size:22px;font-weight:900">'+esc(amtText(it))+'</b><br>تاریخ: <b>'+esc(fa(it.date||''))+'</b>';
+ open('#ovView')}
+function cur(){return items.filter(function(x){return x.id===curId})[0]}
+
+function copyText(t){
+ if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(t);
+ return new Promise(function(ok,no){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity=0;
+  document.body.appendChild(a);a.select();try{document.execCommand('copy')?ok():no()}catch(e){no()}document.body.removeChild(a)})}
+
+function printSlip(it){
+ $('#printArea').innerHTML='<h3>شماره حواله '+esc(fa(norm(it.no)))+'</h3><div>فرستنده: <b>'+esc(it.from)+'</b></div><div>گیرنده: <b>'+esc(it.to)+'</b></div>'+(it.src?'<div>منبع: <b>'+esc(it.src)+'</b></div>':'')+'<div>مبلغ: <b style="font-size:28px;font-weight:900">'+esc(amtText(it))+'</b></div><div>تاریخ: <b>'+esc(fa(it.date||''))+'</b></div><div class="ft">دفتر حواله صرافی</div>';
+ setTimeout(function(){window.print()},60)}
+
+/* ---------- پشتیبان‌گیری ---------- */
+function openSet(){
+ var m=meta();$('#sInfo').textContent=fa(items.length)+' حواله در دستگاه ذخیره است. '+(m.lastBackup?'آخرین پشتیبان: '+fa(m.lastBackup):'تاکنون پشتیبان نگرفته‌اید.');
+ $('#sDigits').textContent=digitsFa?'نمایش اعداد: فارسی ۱۲۳ (تغییر به English)':'نمایش اعداد: English 123 (تغییر به فارسی)';
+ open('#ovSet')}
+function backup(){
+ var d=new Date(),stamp=today().replace(/\//g,'-');
+ var blob=new Blob([JSON.stringify({app:'daftar-hawala',version:1,exportedAt:d.toISOString(),items:items},null,1)],{type:'application/json'});
+ var name='hawala-backup-'+stamp+'.json',file;
+ var done=function(){var m=meta();m.lastBackup=today();localStorage.setItem(META,JSON.stringify(m));openSet();toast('پشتیبان آماده شد')};
+ try{file=new File([blob],name,{type:'application/json'})}catch(e){file=null}
+ if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+  navigator.share({files:[file],title:name}).then(done).catch(function(e){if(e&&e.name!=='AbortError')dl()});return}
+ dl();
+ function dl(){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},4000);done()}}
+function restore(f){
+ var r=new FileReader();
+ r.onload=function(){try{
+  var j=JSON.parse(r.result),arr=Array.isArray(j)?j:j.items;if(!Array.isArray(arr))throw 0;
+  var n=0;arr.forEach(function(x){if(!x||x.no==null||!x.from||!x.to)return;
+   var rec={id:x.id||uid(),no:norm(x.no),from:String(x.from),to:String(x.to),amount:norm(x.amount),cur:x.cur||'',date:norm(x.date||''),src:String(x.src||''),created:x.created||Date.now()};
+   var i=items.findIndex(function(y){return norm(y.no)===rec.no});
+   if(i>-1){rec.id=items[i].id;items[i]=rec}else items.push(rec);n++});
+  save();render();openSet();toast(fa(n)+' حواله بازیابی شد')}catch(e){toast('فایل پشتیبان معتبر نیست')}};
+ r.readAsText(f)}
+
+/* ---------- رویدادها ---------- */
+var SRC=['مزار شریف','کابل','فاریاب','هرات','قندهار','ننگرهار','کندز','بلخ'];
+function srcList(){var l=SRC.slice(),k={};l.forEach(function(x){k[nz(x)]=1});items.forEach(function(it){var s=(it.src||'').trim();if(s&&!k[nz(s)]){k[nz(s)]=1;l.push(s)}});return l}
+function renderSrc(){var v=nz($('#fSrc').value),L=srcList(),h='',o='';L.forEach(function(c){o+='<option value="'+esc(c)+'">'});L.slice(0,14).forEach(function(c){h+='<button type="button" class="chip'+(v===nz(c)?' on':'')+'" data-c="'+esc(c)+'">'+esc(c)+'</button>'});$('#srcChips').innerHTML=h;$('#srcs').innerHTML=o}
+function renderChips(){var v=nz($('#fCur').value),h='';['دالر','افغانی','یورو','پوند','درهم','کلدار','تومان'].forEach(function(c){h+='<button type="button" class="chip'+(v===nz(c)?' on':'')+'" data-c="'+c+'">'+flag(c)+' '+c+'</button>'});$('#chips').innerHTML=h}
+$('#srcChips').onclick=function(e){var b=e.target.closest('.chip');if(b){$('#fSrc').value=b.dataset.c;renderSrc()}};
+$('#fSrc').addEventListener('input',function(){var v=nz(this.value);Array.prototype.forEach.call($('#srcChips').children,function(b){b.classList.toggle('on',nz(b.dataset.c)===v)})});
+$('#chips').onclick=function(e){var b=e.target.closest('.chip');if(b){$('#fCur').value=b.dataset.c;renderChips()}};
+$('#fCur').addEventListener('input',renderChips);
+$('#bAdd').onclick=function(){openForm()};
+$('#fCancel').onclick=function(){close('#ovForm')};
+$('#fSave').onclick=saveForm;
+$('#list').onclick=function(e){var c=e.target.closest('.card');if(c)openView(c.dataset.id)};
+$('#q').oninput=function(){query=this.value;render()};
+$('#bSort').onclick=function(){asc=!asc;render()};
+$('#vClose').onclick=function(){close('#ovView')};
+$('#vCopy').onclick=function(){var it=cur();copyRich(slipText(it),slipHtml(it)).then(function(){toast('متن حواله کپی شد')},function(){toast('کپی ممکن نشد')})};
+$('#vPrint').onclick=function(){printSlip(cur())};
+$('#vEdit').onclick=function(){var it=cur();close('#ovView');openForm(it)};
+$('#vDel').onclick=function(){var it=cur();
+ ask('شماره حواله '+fa(norm(it.no))+' حذف شود؟ این کار قابل بازگشت نیست.','حذف',function(){
+  items=items.filter(function(x){return x.id!==it.id});save();close('#ovView');render();toast('حواله حذف شد')})};
+$('#bSet').onclick=openSet;
+$('#sClose').onclick=function(){close('#ovSet')};
+$('#sBackup').onclick=backup;
+$('#sRestore').onclick=function(){$('#sFile').click()};
+$('#sFile').onchange=function(){if(this.files[0])restore(this.files[0]);this.value=''};
+['#ovForm','#ovView','#ovSet'].forEach(function(id){$(id).addEventListener('click',function(e){if(e.target===this&&id!=='#ovForm')close(id)})});
+['#fNo','#fFrom','#fTo','#fSrc','#fAmt','#fCur','#fDate'].forEach(function(id){$(id).addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();saveForm()}})});
+$('#fAmt').addEventListener('input',function(){var pe=/[۰-۹]/.test(this.value),v=norm(this.value).replace(/[^0-9.]/g,''),i=v.indexOf('.');if(i>-1)v=v.slice(0,i+1)+v.slice(i+1).split('.').join('');v=group(v);this.value=pe?v.split('').map(function(c){return /[0-9]/.test(c)?'۰۱۲۳۴۵۶۷۸۹'[c]:c}).join(''):v});
+$('#fDate').addEventListener('input',function(){this.value=this.value.replace(/[^0-9۰-۹٠-٩\/.\-]/g,'')});
+$('#sDigits').onclick=function(){digitsFa=!digitsFa;var m=meta();m.digits=digitsFa?'fa':'en';localStorage.setItem(META,JSON.stringify(m));render();openSet()};
+
+load();digitsFa=meta().digits!=='en';render();
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
+if('serviceWorker' in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});
+})();
+</script>
+</body>
+</html>
